@@ -1,3 +1,4 @@
+import { shallow } from 'enzyme';
 import * as React from 'react';
 
 import Collection, {
@@ -510,7 +511,12 @@ describe(__filename, () => {
     expect(wrapper.find('.Collection-wrapper')).toHaveLength(1);
     expect(wrapper.find(AddonsCard))
       .toHaveProp('editing', false);
-    expect(wrapper.find(Paginate)).toHaveProp('pathname', pathname);
+
+    const footer = wrapper.find(AddonsCard).prop('footer');
+    const paginator = shallow(footer);
+
+    expect(paginator.instance()).toBeInstanceOf(Paginate);
+    expect(paginator).toHaveProp('pathname', pathname);
     expect(wrapper.find('.Collection-edit-link')).toHaveLength(0);
   });
 
@@ -533,7 +539,11 @@ describe(__filename, () => {
     expect(wrapper.find('.Collection-wrapper')).toHaveLength(1);
     expect(wrapper.find(AddonsCard))
       .toHaveProp('editing', true);
-    expect(wrapper.find(Paginate)).toHaveProp('pathname', pathname);
+
+    const footer = wrapper.find(AddonsCard).prop('footer');
+    const paginator = shallow(footer);
+    expect(paginator).toHaveProp('pathname', pathname);
+
     expect(wrapper.find(CollectionManager)).toHaveLength(1);
 
     // Make sure these were not rendered.
@@ -554,7 +564,7 @@ describe(__filename, () => {
     }));
 
     const wrapper = renderComponent({ store });
-    expect(wrapper.find(Paginate)).toHaveLength(0);
+    expect(wrapper.find(AddonsCard).prop('footer')).toEqual(null);
   });
 
   it('renders loading indicator on add-ons when fetching next page', () => {
